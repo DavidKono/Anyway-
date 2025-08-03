@@ -1,0 +1,19 @@
+site_name: Anyway
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Introduction: 
+    - Introduction: introduction/intro.md
+    - Chapter 0: introduction/chapter0.md
+  - Chapter 1 Computer Basics:
+    - Conceptual: basics/chapter1.md
+    - Physical Circuits: basics/chapter1.md
+  - Chapter 2 Computing:
+    - Datatypes: computing/datatypes.md
+    - Chapter 2: computing/chapter2.md
+  - Chapter 3: chapter3.md
+  - Chapter 4: chapter4.md
+  - Chapter 5: chapter5.md
+extra_css:
+  - custom.css

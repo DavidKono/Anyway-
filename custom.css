@@ -1,0 +1,25 @@
+/* custom.css */
+
+body {
+  background-color: rgb(183, 87, 87) !important;
+  color: black !important;
+}
+
+.md-header, .md-footer, .md-nav__title, .md-nav__item, .md-nav__link {
+  background-color: white !important;
+  color: black !important;
+}
+
+a, a:hover, a:visited {
+  color: black !important;
+  text-decoration: none !important;
+}
+
+.md-nav {
+  background-color: white !important;
+  border-right: 1px solid #ddd !important;
+}
+
+.md-footer {
+  display: none !important;
+}
