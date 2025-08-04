@@ -11,10 +11,6 @@ Floating
 32-bit 64-bit
 
 
-
-## The Turing Machine
-
-
 ## Instructions
 
 
