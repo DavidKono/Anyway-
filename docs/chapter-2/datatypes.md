@@ -5,7 +5,7 @@ This can be practical or for usability.
 Integer - a whole number. This is the most important datatype that we spent the time building up intuition for in chapter 1. It is simply a bianry representation of any number up to the maximum values allowed. If you have exactly 8 bits and only want to represent from 0 and positive numbers, you can represent up to 2^N - 1 different integer numbers.
 
 
-Floating point - A floating point number is a way of representing decimal points. I say a way because it is not the only way, and is certainly not the most obvious way.
+##Fixed point
 If you think to yourself for a moment you would realise that the simplest way to represent decimal points is the way we humans do that... with decimal points! 
 We simply define a point at which we want to have our decimal point and then put it there. Decimal points work for binary the same way they work in binary (except they're not really decimal points anymore). In an eight bit number everything before the decimal point is as with a normal integer, and everything after will simply be a fraction (in binary but it is the exact same principal as decimal decimals). I.e. 1100.1010 is 1100 which is 4 + 8. .1100 is 1/2 + 1/4. So in total we get 12.75. 
 To represent 1/3 using only powers of 2 is impossible just like in decimal, so let's get pretty close with 0.333333.
@@ -23,6 +23,72 @@ In my opinion a good balance would be to ditch the leading 4 zeros and instead h
 
 What if we could satisfy both exclusively. We already achieved a simple version of this with our controllable digit places, but we can do even better at the cost of ditching integer arithmetic.
 
+##Floating point
+What if I told you that I can multiply numbers on the scales of thousand of zeroes, and so can you! 10 with 100 zeroes following it multiplied by 10 with 50 zeroes following it is 10 with 150 zeroes following it. 10 with 100 zeroes following it divided by 10 with 20 zeroes following it is 10 with 80 zeroes following it. 10 with 10 zeroes following it plus 10 with 10 zeroes following it is 20 with 10 zeroes folloing it. 30 with 100 zeroes following it minus 5 with 100 zeroes following it is 25 with 100 zeroes following it!  
+Cherry-picked? Yes, but I have demonstrated something pretty cool with scientific notation. If you have never seen scientific notation, instead of writing 5 with 100 zeroes following it, I can say 5 x 10^100 or even simpler, 5E100. 
+Even writing out 100 digits would take a long time and yet I can do some basic arithmetic on these huge numbers just by representing it a certain way. The same works for fractions. I can represent one one-thousandth with 1E-3, a millionth with 1E-6, 1 googolth with 1E-100. 
+Imagine doing these equations with the normal written multiplication on explicit numbers like we are taught in grade school. It would take forever. 
+
+###Scientific Notation Addition
+
+3.1415E10 plus 9.2653E5
+We need both numbers to have the same exponent to perform simple addition, so we shift the smaller number to the right by the difference in exponents (10-5 = 5). This gives 3.1415E10 plus 0.000092653E10.  
+3.1415E10  
+0.000092653E10  
+
+Now we can see that the numbers line up very simply to give us 3.141592653E10!
+
+
+I conveniently ignored overflow here, lets do numbers that will create an additional decimal place.  
+1.81828E5 plus
+9E6
+
+Again we want the same exponent so shift 1.81828E5 by 1 to get 18.1828E6.   
+
+Add them
+27.1828E6
+
+So far we have been sticking to one decimal place for consistency, so IF we want to stick to that we will have to normalise them. Shift the digit back to give 2.71826E5.
+
+Another consideration is that here I am working in decimal and doing this manually, but what happens if we only want a certain level of precision, i.e. a significand (the number of non-zero leading numbers) of a maximum value.
+If our significand is too small we would have to drop a digit after adding.
+
+###Scientific Notation Subtraction
+
+Subtraction is no different, we simply shift the smaller number to match the larger's. Then we subtract these scaled nubmers. Finally we normalise if necessary.
+
+
+
+###Scientific Notation Multiplication 
+
+Multiplication in scientific notation is a similarly simple process. We simply multiply our coefficients and add our exponents.
+
+I.e. 1.5E3 * 2.3E5 
+(2.3*1.5) = 2.45
+(E3 + E5) = E8
+
+= 2.45E8
+
+
+###Scientific Notation Division 
+
+Scientific notation is the reverse process. If we want AEB / CED we simply
+Divide A by C.   
+Subtract D from B.   
+
+
+##Float
+Now we need to convert our findings into binary.
+
+We will want our first bit to correspond to the sign.
+Then we will have our exponent. 
+
+I note on the exponent:
+All zeros exponent and mantissa = positive and negative sign bit.
+
+
+
+
 What if instead of treating each number as a power of two, we could treat the accumulation of these numbers as the exponent of two itself. That is, we dedicate a few bit to creating a number that controls our scale. If we used 8 bits, we could get a exponent of up to (a maximum of b11111111) 2^255. This would allow us to represent seriously huge numbers. However if we make this exponent only unsigned then we can't get negative exponents and thus can't get fractions. Instead we again use 1 bit for signedness and the other 7 for the actual magnitude of the exponent, that is, -128 to +127. 
 
 Now we also want to decide if this datatype should be signed.
@@ -32,7 +98,6 @@ With our current float design this is not the case. Remember this is a completel
 Remember, a single bit can usually only double the level of information stored. That might mean having both the positive and negative end of the number line or doubling the amount of precision. Scaling the exponent actually doubles the precision of the exponent in scientific notation - that is, we are getting more bang for our book in terms of size but not decimal place accuracy.  
 We could hypothetically have two different floating point datatypes - signed and unsigned - but why fret about doubling our accuracy for the occassional case we want only positive floats when at that point we could just use a 64 bit float.  
 That's right, we dedicate a whole 11 bits to the exponent for a maximum scale of 2^1023 and minimum scale 2^-1024, and then a maximum precision of 52 bits in the mantissa!
-
 
 
 
@@ -74,3 +139,4 @@ I.e.
 Here are two caveats to that
 0.29999999
 Coordinate positions
+
